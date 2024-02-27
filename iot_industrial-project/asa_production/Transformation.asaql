@@ -1,0 +1,63 @@
+/*
+Here are links to help you get started with Stream Analytics Query Language:
+Common query patterns - https://go.microsoft.com/fwLink/?LinkID=619153
+Query language - https://docs.microsoft.com/stream-analytics-query/query-language-elements-azure-stream-analytics
+*/
+
+SELECT
+    DeviceName,
+    WorkorderId,
+    AVG(CAST(GoodCount AS float) / CAST((GoodCount + BadCount) AS float)) * 100 AS KPI,
+    System.Timestamp() AS windEndTime
+INTO
+    [kpi-production]
+FROM
+    [IOT-projekt-Biaheza]
+TIMESTAMP BY
+    EventEnqueuedUtcTime
+GROUP BY
+    WorkorderId,
+    DeviceName,
+    TumblingWindow(minute, 5);
+
+
+SELECT
+    DeviceName,
+    WorkorderId,
+    System.Timestamp() AS windowEndTime,
+    AVG(Temperature) AS AvgTemperature,
+    MIN(Temperature) AS MinTemperature,
+    MAX(Temperature) AS MaxTemperature
+INTO
+    [temperature-info]
+FROM
+    [IOT-projekt-Biaheza]
+TIMESTAMP BY
+    EventEnqueuedUtcTime
+GROUP BY
+    WorkorderId,
+    DeviceName,
+    HoppingWindow(minute, 5, 1);
+
+
+
+SELECT
+    DeviceName,
+    WorkorderId,
+    COUNT(*) AS ErrorCount,
+    System.Timestamp() AS windowEndTime
+INTO
+    [device-err]
+FROM
+    [IOT-projekt-Biaheza]
+TIMESTAMP BY
+    EventEnqueuedUtcTime
+WHERE
+    IsDevErr = 'true'
+GROUP BY
+    WorkorderId,
+    DeviceName,
+    SlidingWindow(minute, 1)
+Having
+    COUNT(*) > 3;
+

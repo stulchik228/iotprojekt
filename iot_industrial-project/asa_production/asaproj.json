@@ -1,0 +1,26 @@
+{
+    "name": "asa_production",
+    "startFile": "Transformation.asaql",
+    "configurations": [
+        {
+            "filePath": "JobConfig.json",
+            "subType": "JobConfig"
+        },
+        {
+            "filePath": "Outputs/kpi-production.json",
+            "subType": "Output"
+        },
+        {
+            "filePath": "Outputs/device-err.json",
+            "subType": "Output"
+        },
+        {
+            "filePath": "Inputs/iot.json",
+            "subType": "Input"
+        },
+        {
+            "filePath": "Outputs/temperature-info.json",
+            "subType": "Output"
+        }
+    ]
+}
